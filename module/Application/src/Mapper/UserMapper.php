@@ -17,17 +17,6 @@ class UserMapper extends AbstractMapper implements UserMapperInterface
 	/**
      * {@inheritDoc} 
 	 */
-	public function getByEmail($email) 
-	{	
-		$select = $this->getSelect();
-		$select->where(['email' => (string) $email]);
-		$entity = parent::select($select)->current();
-		return $entity;
-	}
-
-	/**
-     * {@inheritDoc} 
-	 */
 	public function getByFilter($where, $order, $limit, $offset)
 	{	
 		$select = $this->getSelect();
