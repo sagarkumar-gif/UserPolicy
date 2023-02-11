@@ -1,2 +1,3 @@
 composer update
+
 composer serve
