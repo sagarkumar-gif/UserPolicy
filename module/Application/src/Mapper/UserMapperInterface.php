@@ -10,15 +10,6 @@ interface UserMapperInterface
 	 * @return UserInterface
 	 */
 	public function getById($id);
-
-	/**
-	 * Get user by email
-	 *
-	 * @param string $email
-	 * @return UserInterface
-	 */
-	public function getByEmail($email);
-
 	/**
 	 * Get all users or by filter
 	 *
