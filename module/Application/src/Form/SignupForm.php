@@ -99,6 +99,7 @@ class SignupForm extends Form
 				'class' => 'premium',
 			],
 		]);
+		
 		$this->add(new Element\Csrf('csrf'));
 
 		$this->add([

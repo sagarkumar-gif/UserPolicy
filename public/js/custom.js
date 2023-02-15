@@ -23,6 +23,7 @@ jQuery(function($){
 		e.preventDefault();
 		$('#user-action-form')[0].reset();
 		$('#status-message').html("");
+		$('#success-message').empty();
 	    $('#modal-title').text('Add New User');
 	    $('#user-submit').val('Add User');
 		$(document.body).append('<script>var useridEdit=null;</script>');
@@ -33,6 +34,7 @@ jQuery(function($){
 		e.preventDefault();
 
 		$('#status-message').html("");
+		$('#success-message').empty();
 		var fetchId = $(this).data('userid');
 		$(document.body).append('<script>var useridEdit=' + fetchId + ';</script>');
 	    var userId = useridEdit;
@@ -83,6 +85,7 @@ jQuery(function($){
 	$('#user-action-form').on('submit', function(e) {
 		e.preventDefault();
 		$('#status-message').html('');
+		$('#success-message').empty();
 		var firstname, lastname, policynumber,startdate,enddate,premium, userId;
 		firstname = $('#firstname').val();
 		lastname = $('#lastname').val();
@@ -91,6 +94,11 @@ jQuery(function($){
 		enddate = $('#enddate').val();
 		premium = $('#premium').val();
 		userId = useridEdit;
+		var date_error = {"date_error":"The End date must be greater than the Start date"};
+		if (startdate > enddate){
+			$('#status-message').append('<div class="alert alert-danger alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>'+ date_error.date_error + '</div>');
+			return;
+         }
 		$.ajax({
 			type: 'POST',
 			url: '/users/handle',
@@ -111,11 +119,13 @@ jQuery(function($){
 						$('#status-message').append('<div class="alert alert-danger alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>'+ data.error[i] + '</div>');
 					}
 				} else {
+					$('#success-message').append('<div class="alert alert-success alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>'+ data.success + '</div>')
 					$('#user-action-form')[0].reset();
 					// Hides modal
 					$('#user-action-modal').modal('hide');
 					// Reloads the table
-					dataTable.ajax.reload();					
+					dataTable.ajax.reload();
+				    $("#success-message").show().delay(2000).fadeOut();
 				}
 			},
 			error: function(xhr, textStatus, errorThrown) {
@@ -137,18 +147,17 @@ jQuery(function($){
 			},
 		});
 	});
-
 	// Sets user id
 	$('#user-delete-modal').on('show.bs.modal', function(e){
 		var button = $(e.relatedTarget);
 		var userId = button.data('userid');
-
 		$(document.body).append('<script>var useridDelete=' + userId + ';</script>');
 		$('#user-number-delete').text(useridDelete);
 	});
 
 	// Deletes user
 	$('#delete-this-user').on('click', function(e){
+		$('#success-message').empty();
 		e.preventDefault();
 	    var userId = useridDelete;
 		$.ajax({
@@ -160,10 +169,12 @@ jQuery(function($){
 				'userId': userId,
 			},
 			success: function(data){
+				$('#success-message').append('<div class="alert alert-success alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>'+ data.success + '</div>')
 				$('#userid-edit').val("");
 				// Hides modal
 				$('#user-delete-modal').modal('hide');
 				dataTable.ajax.reload();
+				$("#success-message").show().delay(2000).fadeOut();
 			},
 			error: function(xhr, textStatus, errorThrown) {
 				if (xhr.status === 0) {
@@ -185,3 +196,4 @@ jQuery(function($){
 		});		
 	});	
 });
+``

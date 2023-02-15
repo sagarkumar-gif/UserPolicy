@@ -4,6 +4,7 @@
         <button class="btn btn-success pull-right" id="add-this-user" data-toggle="modal" data-target="#user-action-modal">Add New User</button>
     </div>
 	<div class="table-responsive">
+	    <div id="success-message"></div>
 		<table id="user-table" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
 	 		<thead>
 	 			<th>ID</th>
@@ -35,32 +36,32 @@
 	 				
 	                <div class="form-group">
 	                    <label for="first_name">First Name</label>
-	                    <input type="text" id="firstname" placeholder="First Name" class="form-control">
+	                    <input type="text" id="firstname" placeholder="Firstname" class="form-control">
 	                </div>
 	 
 	                <div class="form-group">
 	                    <label for="last_name">Last Name</label>
-	                    <input type="text" id="lastname" placeholder="Last Name" class="form-control">
+	                    <input type="text" id="lastname" placeholder="Lastname" class="form-control">
 	                </div>
 	 
 	                <div class="form-group">
 	                    <label for="policynumber">Policy Number</label>
-	                    <input type="text" id="policynumber" placeholder="policynumber" class="form-control">
+	                    <input type="text" id="policynumber" placeholder="Policynumber" class="form-control">
 	                </div>
 
 	                <div class="form-group">
 	                    <label for="startdate">Start Date</label>
-	                    <input type="text" id="startdate" placeholder="startdate" class="form-control">
+	                    <input type="text" id="startdate" placeholder="YYYY-MM-DD" class="form-control">
 	                </div>
 
 	                <div class="form-group">
 	                    <label for="enddate">End Date</label>
-	                    <input type="text" id="enddate" placeholder="enddate" class="form-control">
+	                    <input type="text" id="enddate" placeholder="YYYY-MM-DD" class="form-control">
 	                </div>
 
 	                <div class="form-group">
 	                    <label for="premium">Premium</label>
-	                    <input type="text" id="premium" placeholder="premium" class="form-control">
+	                    <input type="text" id="premium" placeholder="Premium" class="form-control">
 	                </div>
 	            </div>
 
@@ -82,7 +83,7 @@
 				<h4>You are deleting user ID: #<span id="user-number-delete"></span></h4>
 			</div>
 	        <div class="modal-footer">
-	            <button type="button" class="btn btn-primary" id="delete-this-user">Delete</button>
+	            <button type="button" class="btn btn-danger" id="delete-this-user">Delete</button>
 	            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 	        </div>		
 		</div>

@@ -14,9 +14,24 @@ use Zend\View\Model\ViewModel;
 
 class UserController extends AbstractActionController
 {
-
+    /**
+     * @var UserServiceInterface
+     */
 	protected $userService;
+
+	/**
+     * @var InputFilterInterface
+     */
+
     protected $signupFormFilter;   
+
+	/**
+	 * Constructor
+	 *
+	 * @param UserServiceInterface $userService
+	 * @param InputFilterInterface $signupFormFilter
+	 * @return void
+	 */
 
 	public function __construct(
 		UserServiceInterface $userService,
@@ -30,6 +45,12 @@ class UserController extends AbstractActionController
 	{
 		$userEntities = $this->userService->getUserByFilter();
 		$userData = $userEntities->toArray();
+		
+		// User data with pagination
+		// $paginator = new Paginator(new ArrayAdapter($userData));
+		// $paginator->setItemCountPerPage(5);
+		// $paginator->setCurrentPageNumber($this->params()->fromRoute('page'));
+
 		return new ViewModel([
 			'users' => $userData,
 		]);
@@ -52,18 +73,35 @@ class UserController extends AbstractActionController
 
         $response->setContent(Json::encode($data));
         return $response;
+        // return new JsonModel($data);
 	}	
 		
+	/**
+	 * Prepares formatted data for datatable
+	 * 
+	 * @return array
+	 */	
 	protected function getFormattedDataForDatatable()
 	{
         $request = $this->getRequest();
 
+		// Gets values for datatable from the request
         $draw = intval($request->getPost('draw'));
         $limit = intval($request->getPost('length'));
         $offset = intval($request->getPost('start'));
 
+        // Prepares Where clause
         $search = strip_tags($request->getPost('search')['value']);
         if (!empty($search)) {
+        	// Where clause using array
+    		// $where = [
+    		// 	new Like('firstname', $search, '%'),
+    		// 	new Like('lastname', $search, '%'),
+    		// 	new Like('email', $search, '%'),
+    		// 	new Like('id', $search, '%'),
+    		// ];
+
+    		// Where clause using closure
     		$where = function(Where $where) use($search) {
     			$where->like('firstname', "%$search%")
     			->or->like('lastname', "%$search%")
@@ -74,6 +112,7 @@ class UserController extends AbstractActionController
 	    	$where = null;
 	    }
         
+        // Prepare value for ORDER BY clause if provided
         $order = $request->getPost('order');
         if (!empty($order)) {
         	$columns = [
@@ -94,9 +133,11 @@ class UserController extends AbstractActionController
         	$orderBy = "id asc";
         }
      
+        // Gets filtered data
 		$userEntities = $this->userService->getUserByFilter($where, $orderBy, $limit, $offset);
 		$filteredUsers = $userEntities->toArray();
 
+        // Prepares data for datatable
 		$tableContent = [];
 		foreach ($filteredUsers as $user) {
 			$prepareData = [];
@@ -112,6 +153,7 @@ class UserController extends AbstractActionController
 			$tableContent[] = $prepareData;	
 		}
 
+		// Makes appropriate total for pagination
 		if (null === $where) {
 			$allUsers = $this->userService->getUserByFilter();
 			$recordsTotal = count($allUsers);
@@ -122,6 +164,7 @@ class UserController extends AbstractActionController
 			$recordsFiltered = $recordsTotal;
 		}
 
+        // Prepares data available for datatable
         $data = [
         	'draw' => $draw,
         	'recordsTotal' => $recordsTotal,
@@ -138,6 +181,7 @@ class UserController extends AbstractActionController
         $response = $this->getResponse();
         $response->getHeaders()->addHeaderLine("Content-Type", "application/json");
 
+        // Checks if the request is valid
 	    if (!$request->isPost() || !$request->isXmlHttpRequest()) {
 			$response->setContent(Json::encode(['error' => ['Very bad request']]));
 			return $response;
@@ -167,7 +211,7 @@ class UserController extends AbstractActionController
 			unset($data['userId']);			
 
 			if ($this->userService->updateUser($data, ['id' => $userId])) {
-				$response->setContent(Json::encode(['success' => 'User updated']));
+				$response->setContent(Json::encode(['success' => 'User policy has been updated successfully.']));
 			} else {
 				$response->setContent(Json::encode(['error' => ['Change any data and try again']]));
 			}
@@ -190,7 +234,7 @@ class UserController extends AbstractActionController
 
 
 			if ($userId = $this->userService->registerUser($data)) {
-				$response->setContent(Json::encode(['success' => 'User created', 'userId' => $userId])); 
+				$response->setContent(Json::encode(['success' => 'User policy has been added successfully.', 'userId' => $userId])); 
 			} else {
 				$response->setContent(Json::encode(['error' => ['Could not create user']]));
 			}
@@ -236,7 +280,7 @@ class UserController extends AbstractActionController
 
 	    $userId = intval($request->getPost('userId'));
     	if ($this->userService->deleteUser(['id' => $userId])) {
-    		$response->setContent(Json::encode(['success' => "User deleted"]));
+    		$response->setContent(Json::encode(['success' => "User has been deleted successfully."]));
     	} else {
     		$response->setContent(Json::encode(['error' => ['Could not find the user']]));
     	}
