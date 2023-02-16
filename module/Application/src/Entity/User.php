@@ -168,7 +168,6 @@ class User implements UserInterface
     public function setpremium($premium)
     {
         $this->premium = $premium;
-
         return $this;
     }
 }
