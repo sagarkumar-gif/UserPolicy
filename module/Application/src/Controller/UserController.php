@@ -60,15 +60,14 @@ class UserController extends AbstractActionController
 	{
         $request = $this->getRequest();
         $response = $this->getResponse();
-		$response->getHeaders()->addHeaderLine("Content-Type", "application/json");
+        $response->getHeaders()->addHeaderLine("Content-Type", "application/json");
 
         // Checks if the request is valid
-	    if (!$request->isPost() || !$request->isXmlHttpRequest()) {
-			$response->setContent(Json::encode(['error' => ['Very bad request']]));
-			return $response;
-	    }
-
-	    // Gets user data
+        if (!$request->isPost() || !$request->isXmlHttpRequest()) {
+            $response->setContent(Json::encode(['error' => ['Very bad request']]));
+            return $response;
+        }
+        // Gets user data
         $data = $this->getFormattedDataForDatatable();
 
         $response->setContent(Json::encode($data));
